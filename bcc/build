@@ -1,0 +1,25 @@
+#!/bin/bash -xe
+VERSION=0.9.0
+HERE=$PWD
+
+mkdir -p ../_build
+cd ../_build
+sudo apt-get -y install bison build-essential cmake flex git libedit-dev libllvm7 llvm-7-dev libclang-7-dev python zlib1g-dev libelf-dev
+[ -d bcc ] || git clone https://github.com/iovisor/bcc/
+cd bcc
+git checkout v$VERSION
+sed -i 's/llvm-3.7/llvm-7/g' CMakeLists.txt
+rm -rf build
+mkdir build
+cd build
+cmake -DLLVM_DIR=/usr/lib/llvm-7/cmake -DCMAKE_INSTALL_PREFIX=/dev/shm/bcc/usr ..
+make -j$(nproc)
+rm -rf /dev/shm/bcc
+make install
+cd /dev/shm/bcc/usr
+mv share/bcc/man share/man
+mv share/bcc/tools bin
+rm -rf bin/old bin/doc
+cd ..
+fpm -s dir -t deb -n bcc --description 'Openbayes bcc package' -v $VERSION -d libelf1 -d zlib1g usr
+mv *.deb $HERE

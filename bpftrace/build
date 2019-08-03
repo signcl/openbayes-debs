@@ -1,0 +1,29 @@
+#!/bin/bash -xe
+VERSION=0.9.2
+HERE=$PWD
+
+mkdir -p ../_build
+cd ../_build
+sudo apt-get install -y bison cmake flex g++ git libelf-dev zlib1g-dev libfl-dev systemtap-sdt-dev llvm-7-dev llvm-7-runtime libclang-7-dev clang-7
+[ -d bpftrace ] || git clone https://github.com/iovisor/bpftrace
+cd bpftrace
+git checkout v$VERSION
+rm -rf build
+mkdir build
+cd build
+# export STATIC_LINKING=ON
+# export RUN_TESTS=0
+cmake -DClang_DIR:PATH=/usr/lib/cmake/clang-7 \
+      -DLLVM_DIR:PATH=/usr/lib/llvm-7/cmake \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/dev/shm/bpftrace/usr \
+      -DBUILD_TESTING=OFF \
+      -LA ..
+make -j$(nproc) bpftrace
+rm -rf /dev/shm/bpftrace
+make install
+cd /dev/shm/bpftrace/usr
+rm -rf man
+cd ..
+fpm -s dir -t deb -n bpftrace --description 'Openbayes bpftrace package' -v $VERSION -d libelf1 -d zlib1g -d libclang1-7 -d libllvm7 -d bcc usr
+mv *.deb $HERE
