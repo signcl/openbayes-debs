@@ -21,5 +21,5 @@ mv share/bcc/man share/man
 mv share/bcc/tools bin
 rm -rf bin/old bin/doc
 cd ..
-fpm -s dir -t deb -n bcc --description 'Openbayes bcc package' -v $VERSION -d libelf1 -d zlib1g usr
+fpm -s dir -t deb -n bcc-tools --description 'Openbayes bcc package' -v $VERSION -d libelf1 -d zlib1g usr
 mv *.deb $HERE

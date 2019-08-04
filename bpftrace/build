@@ -25,5 +25,5 @@ make install
 cd /dev/shm/bpftrace/usr
 rm -rf man
 cd ..
-fpm -s dir -t deb -n bpftrace --description 'Openbayes bpftrace package' -v $VERSION -d libelf1 -d zlib1g -d libclang1-7 -d libllvm7 -d bcc usr
+fpm -s dir -t deb -n bpftrace --description 'Openbayes bpftrace package' -v $VERSION -d libelf1 -d zlib1g -d libclang1-7 -d libllvm7 -d 'bcc-tools >= 0.9.0' usr
 mv *.deb $HERE
