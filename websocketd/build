@@ -1,0 +1,5 @@
+#!/bin/bash -xe
+VERSION=0.3.1
+HERE=$PWD
+
+wget https://github.com/joewalnes/websocketd/releases/download/v$VERSION/websocketd-${VERSION}_amd64.deb
